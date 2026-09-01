@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>편지지</title>
+  <title>마음을 전하는 편지</title>
   <style>
     * {
       box-sizing: border-box;
+      user-select: none;
     }
 
     body {
@@ -14,7 +15,7 @@
       padding: 0;
       width: 100vw;
       height: 100vh;
-      background-color: #fde8ed; /* 전체 배경 핑크색 */
+      background-color: #fde8ed;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -22,7 +23,7 @@
       overflow: hidden;
     }
 
-    /* 하트가 떨어지는 배경 영역 */
+    /* 하트 배경 */
     #bg {
       position: absolute;
       top: 0;
@@ -33,32 +34,25 @@
       z-index: 10;
     }
 
-    /* 하트 애니메이션 */
-    .heart {
+    .heart-fall {
       position: absolute;
       top: -30px;
       color: #ff5c8a;
-      user-select: none;
       animation: fall linear infinite;
     }
 
     @keyframes fall {
-      0% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(105vh);
-        opacity: 0.2;
-      }
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(105vh); opacity: 0.2; }
     }
 
-    /* 가운데 흰색 편지 카드 */
+    /* 카드 틀 */
     .card {
       position: relative;
       width: 85%;
-      max-width: 320px;
+      max-width: 330px;
       height: 75vh;
+      max-height: 580px;
       background-color: #ffffff;
       border-radius: 25px;
       box-shadow: 0 10px 25px rgba(255, 182, 193, 0.4);
@@ -66,58 +60,101 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 25px 20px;
       text-align: center;
       z-index: 1;
     }
 
-    .title {
+    /* 단계별 화면 전환 */
+    .step {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .step.active {
+      display: flex;
+    }
+
+    /* 텍스트 스타일 */
+    .title-large {
+      font-size: 26px;
+      font-weight: bold;
+      color: #e64a19;
+      margin-bottom: 12px;
+    }
+
+    .title-pink {
       font-size: 22px;
       font-weight: bold;
-      color: #aae0e6; /* 신비로운 민트-파란빛 글씨 */
-      text-shadow: 0 0 8px rgba(170, 224, 230, 0.8);
-      margin-bottom: 30px;
+      color: #d6336c;
+      margin-bottom: 10px;
     }
 
-    .subtitle {
-      font-size: 14px;
-      color: #b0e0e6;
-      margin-top: -20px;
-      margin-bottom: 30px;
+    .sub-text {
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 25px;
     }
 
-    /* 편지 봉투 디자인 */
-    .envelope {
-      width: 180px;
+    .small-hint {
+      font-size: 12px;
+      color: #999;
+      margin-top: 15px;
+    }
+
+    /* 분홍색 원형 하트 버튼 */
+    .btn-circle-heart {
+      width: 110px;
       height: 110px;
+      background-color: #f76b8a;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 50px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(247, 107, 138, 0.4);
+      transition: transform 0.2s;
+    }
+
+    .btn-circle-heart:active {
+      transform: scale(0.92);
+    }
+
+    /* 편지 봉투 버튼 */
+    .envelope {
+      width: 190px;
+      height: 120px;
       background-color: #fca3b7;
-      border-radius: 8px;
+      border-radius: 10px;
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      margin-bottom: 25px;
       cursor: pointer;
+      margin: 20px 0;
     }
 
-    /* 봉투 접힌 부분 */
     .envelope::before {
       content: '';
       position: absolute;
       top: 0;
       width: 0;
       height: 0;
-      border-left: 90px solid transparent;
-      border-right: 90px solid transparent;
-      border-top: 60px solid #f98ca6;
+      border-left: 95px solid transparent;
+      border-right: 95px solid transparent;
+      border-top: 65px solid #f98ca6;
     }
 
-    /* 봉투 하트 스티커 */
     .sticker {
       position: absolute;
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       background-color: #ff3b6b;
       border-radius: 50%;
       display: flex;
@@ -126,55 +163,135 @@
       color: white;
       font-size: 14px;
       z-index: 2;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    .main-text {
-      font-size: 20px;
+    /* 선택 버튼 영역 */
+    .btn-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .btn-yes {
+      background-color: #f76b8a;
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 20px;
+      font-size: 16px;
       font-weight: bold;
-      color: #d6336c;
-      margin-bottom: 8px;
+      cursor: pointer;
     }
 
-    .sub-text {
-      font-size: 12px;
-      color: #a0a0a0;
+    .btn-no {
+      background-color: #e0e0e0;
+      color: #666;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* 빨간 하트 에모지 큰것 */
+    .big-emoji {
+      font-size: 70px;
+      margin-bottom: 15px;
     }
   </style>
 </head>
 <body>
 
-  <!-- 하트 내리는 배경 -->
   <div id="bg"></div>
 
-  <!-- 가운데 편지지 카드 -->
   <div class="card">
-    <div class="title">편지지 만드는방법!</div>
-    <div class="subtitle">(어려워요우..)</div>
-
-    <div class="envelope">
-      <div class="sticker">♥</div>
+    <!-- 1단계: 안뇽! -->
+    <div class="step active" id="step1">
+      <div class="title-large" style="color: #f76b8a;">안뇽! 💗</div>
+      <div class="sub-text">누구누구야!</div>
+      <div class="btn-circle-heart" onclick="nextStep(2)">♥</div>
+      <div class="small-hint">하트를 눌러봐 💓</div>
     </div>
 
-    <div class="main-text">편지당? 💌</div>
-    <div class="sub-text">봉투 눌러서 열영</div>
+    <!-- 2단계: 편지당? -->
+    <div class="step" id="step2">
+      <div class="envelope" onclick="nextStep(3)">
+        <div class="sticker">♥</div>
+      </div>
+      <div class="title-pink">편지당? ✉️</div>
+      <div class="sub-text">봉투 눌러서 열엉</div>
+    </div>
+
+    <!-- 3단계: 나 사랑하쥐?? -->
+    <div class="step" id="step3">
+      <div class="title-large" style="color: #c2185b;">나 사랑하쥐?? 🥺</div>
+      <div class="btn-group">
+        <button class="btn-yes" onclick="nextStep(5)">응! ❤️</button>
+        <button class="btn-no" onclick="nextStep(4)">아니??</button>
+      </div>
+      <div class="small-hint" style="margin-top: 30px;">잘 생각해봐... 📑</div>
+    </div>
+
+    <!-- 4단계: 거절 시 나오는 화면 -->
+    <div class="step" id="step4">
+      <div class="title-large" style="color: #c2185b;">나 사랑하쥐?? 🥺</div>
+      <div class="btn-group">
+        <button class="btn-yes" style="padding: 14px 50px;" onclick="nextStep(5)">응! ❤️</button>
+      </div>
+      <div class="small-hint" style="margin-top: 30px;">한 번만 다시 생각해봐... 🥺</div>
+    </div>
+
+    <!-- 5단계: 헤헷 나더 사랑해 -->
+    <div class="step" id="step5">
+      <div class="title-large" style="color: #c2185b;">헤헷 나더 누구 사랑해 ❤️</div>
+      <div class="sub-text">누구누구얌 사랑햄</div>
+      <div class="btn-circle-heart" onclick="nextStep(6)">♥</div>
+      <div class="small-hint">하트를 눌러 💓</div>
+    </div>
+
+    <!-- 6단계: 누구 요즘 뭐뭐해 -->
+    <div class="step" id="step6">
+      <div class="sub-text" style="font-size: 18px; color: #444; margin-bottom: 20px;">
+        누구 요즘 뭐뭐해<br>하트 눌러봐랏
+      </div>
+      <div class="btn-circle-heart" onclick="nextStep(7)">♥</div>
+      <div class="small-hint">눌러랏——</div>
+    </div>
+
+    <!-- 7단계: 하잇! 편지 내용 -->
+    <div class="step" id="step7">
+      <div class="big-emoji">❤️</div>
+      <div class="title-large" style="color: #c2185b;">하잇!</div>
+      <div class="sub-text" style="line-height: 1.6; color: #555; word-break: keep-all; margin-top: 10px;">
+        할말은없엉ㅎㅎ 그냥 사랑한다고 전하고 싶더라구 사랑햄 💓
+      </div>
+    </div>
   </div>
 
   <script>
+    // 배경 하트 흩날리는 효과
     const bg = document.getElementById('bg');
-
-    // 하트 내리는 효과 (원본 코드 그대로 적용)
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 35; i++) {
       const heart = document.createElement('div');
-      heart.classList.add('heart');
-
+      heart.classList.add('heart-fall');
       heart.textContent = '♥';
       heart.style.left = `${Math.random() * 100}vw`;
       heart.style.fontSize = `${12 + Math.random() * 18}px`;
       heart.style.animationDuration = `${6 + Math.random() * 7}s`;
       heart.style.animationDelay = `${-Math.random() * 10}s`;
-      
       bg.appendChild(heart);
+    }
+
+    // 화면 전환 함수
+    function nextStep(stepNumber) {
+      const steps = document.querySelectorAll('.step');
+      steps.forEach(step => step.classList.remove('active'));
+      
+      const targetStep = document.getElementById(`step${stepNumber}`);
+      if (targetStep) {
+        targetStep.classList.add('active');
+      }
     }
   </script>
 
