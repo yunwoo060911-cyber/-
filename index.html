@@ -1,8 +1,65 @@
-<script>
-  heart.textContent = '♥';
-  heart.style.left = `${Math.random() * 100}vw`;
-  heart.style.fontSize = `${12 + Math.random() * 18}px`;
-  heart.style.animationDuration = `${6 + Math.random() * 7}s`;
-  heart.style.animationDelay = `${-Math.random() * 10}s`;
-  bg.appendChild(heart);
-</script>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heart</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff; /* 배경색 */
+      overflow: hidden;
+    }
+
+    #bg {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* 하트의 흩날리는 애니메이션 스타일 */
+    .heart {
+      position: absolute;
+      top: -30px;
+      color: #ff4d6d;
+      user-select: none;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(105vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="bg"></div>
+
+  <script>
+    const bg = document.getElementById('bg');
+
+    // 요청하신 원본 코드와 동일한 구문
+    for (let i = 0; i < 50; i++) {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+
+      heart.textContent = '♥';
+      heart.style.left = `${Math.random() * 100}vw`;
+      heart.style.fontSize = `${12 + Math.random() * 18}px`;
+      heart.style.animationDuration = `${6 + Math.random() * 7}s`;
+      heart.style.animationDelay = `${-Math.random() * 10}s`;
+      
+      bg.appendChild(heart);
+    }
+  </script>
+
+</body>
+</html>
